@@ -10,8 +10,13 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+
     gtag('js', new Date());
-    gtag('config', 'G-ZQW0KHN4MF');
+
+    // ★ 明示的に page_view を送信
+    gtag('config', 'G-ZQW0KHN4MF', {
+      send_page_view: true
+    });
   </script>
 </head>
 
@@ -20,7 +25,7 @@
   // ===== 1. 今日 =====
   const today = new Date();
 
-  // ===== 2. 今月の1日を基準にする =====
+  // ===== 2. 今月の1日 =====
   const base = new Date(
     today.getFullYear(),
     today.getMonth(),
@@ -38,7 +43,6 @@
   const m = String(target.getMonth() + 1).padStart(2, '0');
   const d = '01';
 
-  // 終日イベント用（翌日を終了日に）
   const startDate = `${y}${m}${d}`;
 
   const nextDay = new Date(target);
@@ -52,9 +56,12 @@
   // ===== 4. iOS判定 =====
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
 
-  if (isIOS) {
-    // ===== 5. iOS（ICS） =====
-    const ics =
+  // ★ GA4送信後に遷移させるため少し待つ
+  setTimeout(() => {
+
+    if (isIOS) {
+      // ===== 5. iOS（ICS） =====
+      const ics =
 `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//QR Calendar//JP
@@ -62,31 +69,31 @@ BEGIN:VEVENT
 DTSTART;VALUE=DATE:${startDate}
 DTEND;VALUE=DATE:${endDate}
 SUMMARY:【イオンモバイル】docomoU22学割 割引7か月目(終了月)のご連絡
-DESCRIPTION:現在、割引適用開始より7か月目です。料金プランの変更の際は今月中にイオンモバイルへご相談ください。プラン変更がない場合、来月ご利用分から割引終了後の料金となります。お近くのイオンモバイルはこちらhttps://aeonmobile.jp/shoplist/
+DESCRIPTION:現在、割引適用開始より7か月目です。料金プランの変更の際は今月中にイオンモバイルへご相談ください。プラン変更がない場合、来月ご利用分から割引終了後の料金となります。お近くのイオンモバイルはこちら https://aeonmobile.jp/shoplist/
 END:VEVENT
 END:VCALENDAR`;
 
-    const blob = new Blob([ics], { type: 'text/calendar' });
-    const url = URL.createObjectURL(blob);
-    location.href = url;
+      const blob = new Blob([ics], { type: 'text/calendar' });
+      const url = URL.createObjectURL(blob);
+      location.href = url;
 
-  } else {
-    // ===== 6. Googleカレンダー =====
-    const calendarUrl =
-      "https://calendar.google.com/calendar/render?action=TEMPLATE" +
-      "&text=【イオンモバイル】docomoU22学割 割引7か月目(終了月)のご連絡" +
-      `&dates=${startDate}/${endDate}` +
-      "&details=現在、割引適用開始より7か月目です。料金プランの変更の際は今月中にイオンモバイルへご相談ください。プラン変更がない場合、来月ご利用分から割引終了後の料金となります。お近くのイオンモバイルはこちらhttps://aeonmobile.jp/shoplist/";
+    } else {
+      // ===== 6. Googleカレンダー =====
+      const calendarUrl =
+        "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+        "&text=【イオンモバイル】docomoU22学割 割引7か月目(終了月)のご連絡" +
+        `&dates=${startDate}/${endDate}` +
+        "&details=現在、割引適用開始より7か月目です。料金プランの変更の際は今月中にイオンモバイルへご相談ください。プラン変更がない場合、来月ご利用分から割引終了後の料金となります。お近くのイオンモバイルはこちら https://aeonmobile.jp/shoplist/";
 
-    location.href = calendarUrl;
-  }
+      location.href = calendarUrl;
+    }
+
+  }, 800); // ★ 0.8秒待機
 </script>
 
 <p>カレンダー登録画面を開いています…</p>
 </body>
-
 </html>
-
 
 
 
